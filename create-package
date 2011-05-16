@@ -1,0 +1,26 @@
+#!/bin/bash
+
+VERSION=$1
+
+if [ -z $VERSION ]
+then
+  echo "Usage:"
+  echo "$0 <version>"
+  exit 1
+fi
+
+git submodule update --init
+DIR=scala-mode-$VERSION
+
+rm -rf $DIR
+mkdir $DIR
+cp -r scala-dist/tool-support/src/emacs/* $DIR
+
+cat <<PKG > $DIR/scala-mode-pkg.el
+(define-package "scala-mode" "$VERSION"
+                "Scala major mode")
+PKG
+
+tar cf scala-mode.tar $DIR
+
+echo Done. Now upload $(pwd)/scala-mode.tar to http://marmalade-repo.org/
